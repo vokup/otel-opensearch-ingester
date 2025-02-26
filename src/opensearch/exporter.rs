@@ -74,7 +74,7 @@ impl Exporter {
         &self,
         request: ExportLogsServiceRequest,
     ) -> Result<ExportLogsServiceResponse, ApplicationError> {
-        let bulk_index_template = serde_json::json!({"index": {}});
+        let bulk_create_template = serde_json::json!({"create": {}});
         let mut bulk_body: Vec<JsonBody<serde_json::Value>> = Vec::new();
         for resouce_log in request.resource_logs {
             for scope_log in resouce_log.scope_logs {
@@ -126,7 +126,7 @@ impl Exporter {
                             format_iso8601(chrono::DateTime::from_timestamp_nanos(log_record.time_unix_nano as i64))
                         ),
                     );
-                    bulk_body.push(bulk_index_template.clone().into());
+                    bulk_body.push(bulk_create_template.clone().into());
                     bulk_body.push(Into::<serde_json::Value>::into(log).into());
                     self.processed_log_record.add(1, &[]);
                 }
